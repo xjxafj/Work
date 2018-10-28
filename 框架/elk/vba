@@ -1,0 +1,27 @@
+'windos帮助类
+Dim lang As String
+Private Declare Function GetSystemDefaultLCID Lib "kernel32" () As Long
+'获取当前系统中文还是英文操作系统
+Public Sub Form_Load()
+    Dim LocaleID As Long
+    LocaleID = GetSystemDefaultLCID
+    Select Case LocaleID
+        Case &H404
+            MsgBox "当前系统为：中文繁体", , "语言"
+        Case &H804
+            MsgBox "当前系统为：中文简体", , "语言"
+            lang = "1"
+        Case &H409
+            MsgBox "当前系统为：英文", , "语言"
+            lang = "2"
+    End Select
+End Sub
+
+
+
+   Select Case windowsHelper.lang
+        Case "1"
+            msg = "点击“更新TM”后，TU会同步到所选的IDP TM主库中，请务必保证TU为最终交付件。需生成单语文档，请使用Trados Workbench的Cleanup功能。"
+        Case "2"
+            msg = "Update TM allows you to update TUs to the selected IDP Master TM. Before this operation, make sure that the TUs to be updated are deliverable. To obtain the monolingual document, use the Cleanup function of Trados Workbench."
+    End Select

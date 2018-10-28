@@ -1,0 +1,98 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.IO;
+
+namespace Trados2019Plugin.Core.Hepler
+{
+   public class TxtHelper
+    {
+        public static List<string> LoadTxtContent(string fileName)
+        {
+            List<string> result = new List<string>();
+            try
+            {
+                if (File.Exists(fileName))
+                {
+                    result =  File.ReadAllLines(fileName,Encoding.UTF8).ToList();
+                }
+            }
+            catch(Exception ex) { }
+            return result;
+        }
+
+        public static void Write(string fileName,List<string> content,bool isNew=true)
+        {
+            if (content==null)
+            {
+                return;
+            }
+
+            FileStream fs = null;
+            try
+            {
+                FileInfo fileInfo = new FileInfo(fileName);
+                if (!Directory.Exists(fileInfo.DirectoryName))
+                {
+                    if (isNew)
+                    {
+                        Directory.CreateDirectory(fileInfo.DirectoryName);
+                    }
+                }
+                if (Directory.Exists(fileInfo.DirectoryName))
+                {
+                    fs = new FileStream(fileName, FileMode.Append);
+                    //循环写入内容
+                    foreach (var item in content)
+                    {
+                        byte[] data = System.Text.Encoding.UTF8.GetBytes(item + "\r\n");
+                        //开始写入
+                        fs.Write(data, 0, data.Length);
+                    }
+                    //清空缓冲区、关闭流
+                    fs.Flush();
+                }
+            }
+            catch (Exception)
+            {
+
+                
+            }
+            finally
+            {
+                if (fs!=null)
+                {
+                    fs.Close();
+                }   
+            }
+        }
+
+
+        public void Write()
+        {
+            FileStream fs = new FileStream("E:\\ak.txt", FileMode.Create);
+            //获得字节数组
+            byte[] data = System.Text.Encoding.Default.GetBytes("Hello World!");
+            //开始写入
+            fs.Write(data, 0, data.Length);
+            //清空缓冲区、关闭流
+            fs.Flush();
+            fs.Close();
+        }
+
+
+        public void Read(string path)
+        {
+            StreamReader sr = new StreamReader(path, Encoding.Default);
+            String line;
+            while ((line = sr.ReadLine()) != null)
+            {
+                Console.WriteLine(line.ToString());
+            }
+        }
+
+
+    }
+}

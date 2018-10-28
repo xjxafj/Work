@@ -1,0 +1,193 @@
+tar -cvf jpg.tar *.jpg //将目录里所有jpg文件打包成jpg.tar 
+
+tar -czf jpg.tar.gz *.jpg   //将目录里所有jpg文件打包成jpg.tar后，并且将其用gzip压缩，生成一个gzip压缩过的包，命名为jpg.tar.gz
+
+ tar -cjf jpg.tar.bz2 *.jpg //将目录里所有jpg文件打包成jpg.tar后，并且将其用bzip2压缩，生成一个bzip2压缩过的包，命名为jpg.tar.bz2
+
+tar -cZf jpg.tar.Z *.jpg   //将目录里所有jpg文件打包成jpg.tar后，并且将其用compress压缩，生成一个umcompress压缩过的包，命名为jpg.tar.Z
+
+rar a jpg.rar *.jpg //rar格式的压缩，需要先下载rar for linux
+
+zip jpg.zip *.jpg //zip格式的压缩，需要先下载zip for linux
+
+tar -xvf file.tar //解压 tar包
+
+tar -xzvf file.tar.gz //解压tar.gz
+
+tar -xjvf file.tar.bz2   //解压 tar.bz2
+
+tar -xZvf file.tar.Z   //解压tar.Z
+
+unrar e file.rar //解压rar
+
+unzip file.zip //解压zip
+
+	1.sudo uname -m      查询当前系统的 32位还是64位
+	2.yum install -y java   安装最新版本的jdkenv    系统环境变量mkdir newDir   建文件夹
+	3.tar -zxvf jdk-8u60-linux-x64.tar.gz  解压文件到当前目录
+	4.which java  获取java的环境运行目录
+系统
+cat /etc/issue #查询当前系统的版本
+	
+
+	
+	
+	
+	
+	
+环境变量
+	5.vi /etc/profile 系统环境变量，对应/etc/profile文件，对所有用户有效。
+	6.vi ~/.bashrc    而用户环境变量，对应~/.bashrc文件，仅仅对自己的用户有效。  在非root情况下，多数环境变量建议在~/.bashrc上操作。
+	7.vi ~/.bashrc    文件 export PS1='[\u@\h \w]\$ ' 命令行全路径显示
+	8.grep '^[a-z]' elasticsearch.yml 查看被修改的记录
+JDK
+
+	jdk安装博客： url: http://www.oracle.com/technetwork/java/javase/downloads/index.html
+	
+	linux系统安装
+	yum install -y java-1.8.0-openjdk
+	
+	ubuntu系统安装
+	sudo apt install openjdk-8-jdk-headless
+	
+	
+	
+	
+	环境变量配置
+	vim ~/.profile
+	vi ~/.bashrc
+		JAVA_HOME=/usr/bin/java 
+		PATH=$JAVA_HOME/bin:$PATH 
+		CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar 
+		JRE_HOME=$JAVA_HOME/jre
+		export JAVA_HOME PATH CLASSPATH JRE_HOME
+	检查配置是否成
+	java -version
+	java
+	sudo update-alternatives --config java  #查询本机jdk安装各个版本集合
+	echo $JAVA_HOME
+
+防火墙
+	sudo whereis iptables  #是否安装防火墙
+	sudo iptables -L      #查询防火墙的状态
+	#新建规则文件
+	mkdir /etc/iptables #先新建目录，本身无此目录
+	vi /etc/iptables/rules.v4
+	mkdir /etc/iptables & vi /etc/iptables/rules.v4
+	添加以下内容（备注：80是指web服务器端口，3306是指MySQL数据库链接端口，22是指SSH远程管理端口）
+		复制代码
+		*filter
+		:INPUT DROP [0:0]
+		:FORWARD ACCEPT [0:0]
+		:OUTPUT ACCEPT [0:0]
+		:syn-flood - [0:0]
+		-A INPUT -i lo -j ACCEPT
+		-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+		-A INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+		-A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
+		-A INPUT -p tcp -m state --state NEW -m tcp --dport 3306 -j ACCEPT
+		-A INPUT -p icmp -m limit --limit 100/sec --limit-burst 100 -j ACCEPT
+		-A INPUT -p icmp -m limit --limit 1/s --limit-burst 10 -j ACCEPT
+		-A INPUT -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -j syn-flood
+		-A INPUT -j REJECT --reject-with icmp-host-prohibited
+		-A syn-flood -p tcp -m limit --limit 3/sec --limit-burst 6 -j RETURN
+		-A syn-flood -j REJECT --reject-with icmp-port-unreachable
+		COMMIT
+	#使防火墙生效
+	iptables-restore < /etc/iptables/rules.v4
+	#创建文件，添加以下内容，使防火墙开机启动
+	vi /etc/network/if-pre-up.d/iptables
+	#!/bin/bash
+	iptables-restore < /etc/iptables/rules.v4
+	#添加执行权限
+	chmod +x /etc/network/if-pre-up.d/iptables
+	#查看规则是否生效
+	iptables -L -n
+
+服务
+systemctl                          #显示当前系统所有服务
+systemctl start kibana.service     #启动服务
+systemctl status kibana.service    #查询服务状态
+systemctl stop kebana.service      #停止服务
+systemctl enable kibana.service    #设置为开机启动
+
+
+用户
+sudo -l ：查看当前用户可使用的命令，仅限root用户可用。
+su fujia #切换用户
+//查看用户
+id user
+//添加用户
+useradd user
+//设置密码
+passwd user
+//删除用户
+userdel -r user
+#删除用户的时候用户组被删除
+//加入组
+gpasswd -a testuser root
+#把用户testuser加入到root组；
+#加入组后testuser获取到user组及root组所有权限
+ 
+//移出组
+gpasswd -d testuser root
+#把用户testuser移出root组；、
+
+
+安装命令
+yum install -y java
+rpm -ivh kibana-6.0.0-x86_64.rpm
+sudo dpkg -i xxxx.deb #安装
+
+
+
+
+
+解压命令
+sudo tar zxvf jdk-8u181-linux-x64.tar.gz -C /usr/lib/jvm/
+
+文件操作
+ #复制
+ sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak 复制文件
+ 
+ #复制权限
+ chown [-cfhvR] [--help] [--version] user[:group] file... 
+ 功能 : 更改文件或者文件夹的拥有者
+ 例如：chown -R oracle:oinstall /oracle/u01/app/oracle  
+ 更改目录拥有者为oracle                                         
+
+ #权限修改
+ chmod {u|g|o|a}{+|-|=}{r|w|x} filename 
+ 改变文件的读写和执行权限。有符号法和八进制数字法。
+ u (user)   表示用户本人。 
+          g (group)  表示同组用户。 
+          o (oher)   表示其他用户。 
+          a (all)    表示所有用户。 
+          +          用于给予指定用户的许可权限。 
+          -          用于取消指定用户的许可权限。 
+          =          将所许可的权限赋给文件。 
+          r (read)   读许可，表示可以拷贝该文件或目录的内容。 
+          w (write)  写许可，表示可以修改该文件或目录的内容。 
+          x (execute)执行许可，表示可以执行该文件或进入目录。
+ 
+ #删除
+ 使用rm -rf 目录名字 命令即可
+ -r 就是向下递归，不管有多少级目录，一并删除
+ -f 就是直接强行删除，不作任何提示的意思
+ 删除文件使用实例：rm -f /var/log/httpd/access.log
+ 
+ 
+
+
+示例
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,107 @@
+Oracle数据库备份与还原命令
+数据导出：
+
+ 
+
+  1 将数据库TEST完全导出,用户名system 密码manager 导出到D:\daochu.dmp中
+
+ 
+
+  exp system/manager@TEST file=d:\daochu.dmp full=y
+
+ 
+
+  2 将数据库中system用户与sys用户的表导出
+
+ 
+
+  exp system/manager@TEST file=d:\daochu.dmp owner=(system,sys)
+
+ 
+
+  3 将数据库中的表table1 、table2导出
+
+ 
+
+  exp system/manager@TEST file=d:\daochu.dmp tables=(table1,table2)
+
+ 
+
+  4 将数据库中的表table1中的字段filed1以"00"打头的数据导出
+
+ 
+
+  exp system/manager@TEST file=d:\daochu.dmp tables=(table1)query=\" where filed1 like '00%'\"
+
+ 
+
+  上面是常用的导出，对于压缩我不太在意，用winzip把dmp文件可以很好的压缩。
+
+ 
+
+  不过在上面命令后面 加上 compress=y 就可以了
+
+ 
+
+  数据的导入
+  1 将D:\daochu.dmp 中的数据导入 TEST数据库中。
+
+ 
+
+  imp system/manager@TEST file=d:\daochu.dmp
+
+ 
+
+  上面可能有点问题，因为有的表已经存在，然后它就报错，对该表就不进行导入。
+
+ 
+
+  在后面加上 ignore=y 就可以了。
+
+ 
+
+  2 将d:\daochu.dmp中的表table1 导入
+
+ 
+
+  imp system/manager@TEST file=d:\daochu.dmp tables=(table1)
+
+ 
+
+  基本上上面的导入导出够用了。不少情况我是将表彻底删除，然后导入。
+
+ 
+
+  注意：
+
+ 
+
+  你要有足够的权限，权限不够它会提示你。
+
+ 
+
+  数据库时可以连上的。可以用tnsping TEST 来获得数据库TEST能否连上
+
+ 
+
+附录一：
+
+ 给用户增加导入数据权限的操作
+
+ 第一,启动sql*puls
+
+ 第二，以system/manager登陆
+
+ 第三，create user 用户名 IDENTIFIED BY 密码 （如果已经创建过用户，这步可以省略）
+
+ 第四，GRANT CREATE USER,DROP USER,ALTER USER ,CREATE ANY VIEW ,
+
+   DROP ANY VIEW,EXP_FULL_DATABASE,IMP_FULL_DATABASE,
+
+      DBA,CONNECT,RESOURCE,CREATE SESSION  TO 用户名字 
+
+ 第五, 运行-cmd-进入dmp文件所在的目录, 
+
+      imp userid=system/manager full=y file=*.dmp
+
+      或者 imp userid=system/manager full=y file=filename.dmp

@@ -1,0 +1,7 @@
+  '''
+    *Function:  HexStr2Unicode
+    *Description：  16进制数转换为Unicode字符串
+    *Input:  Hex_Str 16进制数
+    *Return: Unicde_Str Unicode字符串
+    *Others:
+ '''

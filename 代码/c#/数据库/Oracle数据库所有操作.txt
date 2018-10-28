@@ -1,0 +1,381 @@
+﻿Skip to content
+ 
+Search or jump to…
+
+Pull requests
+Issues
+Marketplace
+Explore
+ @xjxafj Sign out
+0
+0 0 xjxafj/Scrapy-
+ Code  Issues 0  Pull requests 0  Projects 0  Wiki  Insights  Settings
+Scrapy-/Oracle数据操作
+80f3be7  a day ago
+@xjxafj xjxafj Create Oracle数据操作
+     
+269 lines (180 sloc)  9.8 KB
+--创建表空间
+CREATE TABLESPACE  tablespaceName ADD DATAFILE 'F:\APP\ORACLEBASE\ORADATA\CORPUS.DBF' SIZE 500M AUTOEXTEND ON  NEXT 5M MAXSIZE UNLIMITED;
+
+
+--密码永不过期
+ALTER PROFILE DEFAULT LIMIT PASSWORD_LIFE_TIME UNLIMITED;
+
+--创建用户
+create user testUser identified by password default tablespace tablespaceName tempporary tables temp quota 10m on  tablespaceName;
+
+说明：
+第一个testUser为用户名，第二个testUser为用户密码，default tablespace是默认表空间，这里设置成上面创建的表空间，temporary tablespace是临时表空间，quote设置用户在表空间上占用的空间大小。如果不指定默认表空间，
+
+Oracle会将SYSTEM表空间指定为用户的默认表空间；如果没有用quota子句，用户在特定表空间的配额为0，用户不能在该表空间上创建数据对象。
+创建用户后，当用户分配的空间不够时，可以扩展用户的空间：
+alter user testUser quota 20m on dbsp_2;将用户的空间扩展为20m
+给用户指定两个表空间，并且可使用大小不限制：
+
+
+alter user userName
+quota unlimited on tablespace1
+quota unlimited on tablespace2;
+注意：在实际应用中建议表数据和表索引分两个表空间，这时就需要给用户在两个表空间分配可使用空间，在创建用户时还是按照上面提到的方法，只指定一个默认表空间，这样如果在创建表时没有指定表空间的情况下，会默认将表创
+
+建在默认表空间里（即default tablespace），如果想给数据库表数据和索引指定不同的表空间，则在给用户分配可使用空间后，在创建数据库表和索引时直接指定即可。
+
+修改用户密码：
+alter user testUser identified by 123456;将用户的密码设置为123456。
+有时用户会处于锁定状态，解锁用户：
+alter user testUser account unlock;
+
+--授权
+grant connect ,resource to testUser;
+初始建立的用户没有任何权限，不能执行任何数据库操作，因此必须为用户设置权限或者角色。被赋予了某个角色的用户将拥有该角色所具备的权限，常被用到的系统预定义角色：CONNECT、RESOURCE、DBA、EXP_FULL_DATABASE、
+
+IMP_FULL_DATABASE。其中，CONNECT、RESOURCE、DBA主要用于数据库管理，数据库管理员需要被授予这三个角色。一般的数据库开发人员，需要被授予CONNECT、RESOURCE角色即可。EXP_FULL_DATABASE、IMP_FULL_DATABASE角色分别用
+
+于操作数据库导出、导入相关的操作。为用户授予角色：
+
+
+--修改列的默认值
+alter table test modify age default 30;
+
+--删除用户语句：
+　　drop user 用户名 cascade;
+　　   删除空的表空间，但是不包含物理文件
+　　drop tablespace tablespace_name;
+　　　删除非空表空间，但是不包含物理文件
+　　drop tablespace tablespace_name including contents;
+　　　删除空表空间，包含物理文件
+　　drop tablespace tablespace_name including datafiles; 
+　　　删除非空表空间，包含物理文件
+　　drop tablespace tablespace_name including contents and datafiles;
+　　　如果其他表空间中的表有外键等约束关联到了本表空间中的表的字段，就要加上CASCADE CONSTRAINTS
+
+
+
+
+
+
+
+
+
+
+--创建MonolingualSentence脚本
+CREATE table MonolingualSentenceEN 
+(
+	ID VARCHAR2(50) not null,
+	Content VARCHAR2(2000),
+	CreateDate date,
+	Creator VARCHAR2(50),
+	ModifyDate date,
+	Modifier VARCHAR2(50),
+	Flag NUMBER(38),
+	Remark VARCHAR2(50),
+	constraint PK_MonolingualSentenceEN primary key (ID)
+);
+
+comment on table MonolingualSentenceEN
+  is '英语库';
+  comment on column MonolingualSentenceEN.Content
+  is '内容';
+  comment on column MonolingualSentenceEN.CreateDate
+  is '创建时间';
+  comment on column MonolingualSentenceEN.Creator
+  is '创建人';
+  comment on column MonolingualSentenceEN.ModifyDate
+  is '修改时间';
+  comment on column MonolingualSentenceEN.Modifier
+  is '修改人';
+  comment on column MonolingualSentenceEN.Flag
+  is '标记是否删除(0,1)';
+  comment on column MonolingualSentenceEN.Remark
+  is '备注';
+
+
+--创建序列
+create sequence Seq_Engine_No increment by 1 start with 1;
+
+--添加一列：     
+alter   table   A   add( CFYJSNR  varchar2(20));     
+--修改列：     
+alter  table A  rename   column   CFYJSNR   to   CFJYSNR;      
+--修改列的类型：     
+alter table A modify cfyj varchar(200);     
+--删除数据库一列     
+alter table A drop column CFYJSNR 
+--更新字段名	
+alter table TABLE_NAME rename column column_old to column_new;
+--添加字段	
+alter table TABLE_NAME add COLUMN_NAME varchar(10);
+--删除字段	
+alter table TABLE_NAME drop column COLUMN_NAME;
+--添加字段并附值	
+alter table TABLE_NAME ADD COLUMN_NAME NUMBER(1) DEFAULT 1;
+--修改字段值	
+update TABLE_NAME set filedname=value where filedname=value;
+--修改字段数据类型	
+alter table tablename modify filedname varchar2(20);
+--修改列的默认值
+alter table DAILYBILINGUALSENTENCE modify CreateDate default sysdate;
+
+--修改列为空
+--待修改字段假定为：shuifen
+1.当该字段为空时，可直接修改：
+alter table reportqymx modify shuifen null;
+2.当待修改字段不为空时：
+新增一列
+把要改变的列的值转移过去并清空原列的值
+改变列的数据类型
+把值转移回来，并删除新增的列
+alter table reportqymx add shuifen_temp number(10);  
+update reportqymx set shuifen_temp=shuifen;  
+alter table reportqymx modify shuifen null;  
+update reportqymx set shuifen=shuifen_temp;  
+alter table reportqymx drop column shuifen_temp;
+
+
+
+--查询表空间使用的情况1
+SELECT  d.status "Status", d.tablespace_name "Name", d.contents "Type", d.extent_management "Extent Management", 
+                TO_CHAR(NVL(a.bytes / 1024 / 1024, 0),'99,999,990.900') "Size (M)", 
+                NVL(t.bytes, 0)/1024/1024 ||'/'||NVL(a.bytes/1024/1024, 0) "Used (M)", 
+                TO_CHAR(NVL(t.bytes / a.bytes * 100, 0), '990.00') "Used %" 
+          FROM  sys.dba_tablespaces d, 
+                (select tablespace_name, sum(bytes) bytes from dba_temp_files group by tablespace_name) a, 
+                (select tablespace_name, sum(bytes_cached) bytes from v$temp_extent_pool group by tablespace_name) t 
+         WHERE  d.tablespace_name = a.tablespace_name(+) 
+           AND  d.tablespace_name = t.tablespace_name(+) 
+           AND  d.extent_management like 'LOCAL' 
+           AND  d.contents like 'TEMPORARY';
+           
+
+
+--
+
+
+
+
+--查询所有表空间使用情况
+SELECT d.status "Status",
+
+       d.tablespace_name "Name",
+
+       d.contents "Type",
+
+       d.extent_management "Extent Management",
+
+       to_char(nvl(a.bytes / 1024 / 1024, 0), '99999999.999') "Total Size (M)",
+
+       to_char(nvl(a.bytes - nvl(f.bytes, 0), 0) / 1024 / 1024,
+
+               '99999999.999') "Used (M)",
+
+       to_char(nvl(nvl(f.bytes, 0), 0) / 1024 / 1024, '99999999.999') "Free (M)",
+
+       to_char(nvl((a.bytes - nvl(f.bytes, 0)) / a.bytes * 100, 0),
+
+               '990.00') "Used %"
+
+  FROM sys.dba_tablespaces d,
+
+       (SELECT tablespace_name, SUM(bytes) bytes
+
+          FROM dba_data_files
+
+         GROUP BY tablespace_name) a,
+
+       (SELECT tablespace_name, SUM(bytes) bytes
+
+          FROM dba_free_space
+
+         GROUP BY tablespace_name) f
+
+ WHERE d.tablespace_name = a.tablespace_name(+)
+
+   AND d.tablespace_name = f.tablespace_name(+);
+   
+
+
+
+           
+--查询表空间使用的情况1          
+SELECT UPPER(F.TABLESPACE_NAME) "表空间名",
+ 
+D.TOT_GROOTTE_MB "表空间大小(M)",
+ 
+D.TOT_GROOTTE_MB - F.TOTAL_BYTES "已使用空间(M)",
+ 
+TO_CHAR(ROUND((D.TOT_GROOTTE_MB - F.TOTAL_BYTES) / D.TOT_GROOTTE_MB * 100,
+ 
+2),
+ 
+'990.99') "使用比",
+ 
+F.TOTAL_BYTES "空闲空间(M)",
+ 
+F.MAX_BYTES "最大块(M)"
+ 
+FROM (SELECT TABLESPACE_NAME,
+ 
+ROUND(SUM(BYTES) / (1024 * 1024), 2) TOTAL_BYTES,
+ 
+ROUND(MAX(BYTES) / (1024 * 1024), 2) MAX_BYTES
+ 
+FROM SYS.DBA_FREE_SPACE
+ 
+GROUP BY TABLESPACE_NAME) F,
+ 
+(SELECT DD.TABLESPACE_NAME,
+ 
+ROUND(SUM(DD.BYTES) / (1024 * 1024), 2) TOT_GROOTTE_MB
+ 
+FROM SYS.DBA_DATA_FILES DD
+ 
+GROUP BY DD.TABLESPACE_NAME) D
+ 
+WHERE D.TABLESPACE_NAME = F.TABLESPACE_NAME
+ 
+ORDER BY 4 DESC;
+
+--查询temp表空间情况
+select tablespace_name,file_name,AUTOEXTENSIBLE,maxbytes,maxblocks from dba_temp_files;
+
+
+--创建表空间
+CREATE TABLESPACE  CORPUS ADD DATAFILE 'F:\APP\ORACLEBASE\ORADATA\CORPUS.DBF' SIZE 500M AUTOEXTEND ON  NEXT 5M MAXSIZE UNLIMITED;
+--扩展表空间
+ALTER TABLESPACE  CORPUS ADD DATAFILE 'F:\APP\ORACLEBASE\ORADATA\CORPUS.DBF' SIZE 500M AUTOEXTEND ON  NEXT 5M MAXSIZE UNLIMITED;
+ALTER TABLESPACE  CORPUS ADD DATAFILE 'F:\APP\ORACLEBASE\ORADATA\CORPUS1.DBF' SIZE 500M AUTOEXTEND ON  NEXT 5M MAXSIZE UNLIMITED;
+ALTER TABLESPACE  CORPUS ADD DATAFILE 'F:\APP\ORACLEBASE\ORADATA\CORPUS2.DBF' SIZE 500M AUTOEXTEND ON  NEXT 5M MAXSIZE UNLIMITED;
+
+
+-- 表空间扩容
+--1.创建中转临时表空间
+create temporary tablespace  TEMP1 TEMPFILE 'F:\APP\ORACLEBASE\ORADATA\temp1.DBF' SIZE 512M REUSE AUTOEXTEND ON NEXT  5M MAXSIZE UNLIMITED;   
+--2.改变缺省临时表空间为刚刚创建的新临时表空间temp1
+alter database default  temporary tablespace  temp1; 
+--3.删除原来临时表空间
+drop tablespace temp including contents and datafiles;
+--4.重新创建临时表空间
+create temporary tablespace  TEMP TEMPFILE 'F:\APP\ORACLEBASE\ORADATA\temp1.DBF' SIZE 512M REUSE AUTOEXTEND ON NEXT  5M MAXSIZE UNLIMITED;   
+--5.重置缺省临时表空间为新建的temp表空间
+alter database default  temporary tablespace  temp; 
+--6.删除中转用临时表空间
+drop tablespace temp1 including contents and datafiles;
+--7.如果有必要，那么重新指定用户表空间为重建的临时表空间
+alter user mango temporary tablespace  temp;  
+--如果还需要对临时表空间进行扩展可使用以下
+alter tablespace TEMP add tempfile 'F:\APP\ORACLEBASE\ORADATA\temp2.DBF' SIZE 512M REUSE AUTOEXTEND ON NEXT  5M MAXSIZE UNLIMITED; 
+alter tablespace TEMP add tempfile 'F:\APP\ORACLEBASE\ORADATA\temp3.DBF' SIZE 512M REUSE AUTOEXTEND ON NEXT  5M MAXSIZE UNLIMITED; 
+
+
+--字符乱码处理
+sql> conn / as sysdba;
+　　sql> shutdown immediate;
+　　database closed.
+　　database dismounted.
+　　oracle instance shut down.
+　　sql> startup mount;
+　　oracle instance started.
+　　total system global area  135337420 bytes
+　　fixed size                          452044 bytes
+　　variable size                     109051904 bytes
+　　database buffers              25165824 bytes
+　　redo buffers                      667648 bytes
+　　database mounted.
+　　sql> alter system enable restricted session;
+　　system altered.
+　　sql> alter system set job_queue_processes=0;
+　　system altered.
+　　sql> alter system set aq_tm_processes=0;
+　　system altered.
+　　sql> alter database open;
+　　database altered.
+　　sql> alter database character set internal_use ZHS16GBK
+　　sql> shutdown immediate;
+　　sql> startup;
+      经过上面的步骤，数据库服务器和客户端的字符集一致了，应该不会出现中文汉字乱码的问题了。
+      以上是今天操作数据库遇到的问题，现在应该可以正常使用本地Oracle11g数据库了。
+
+--函数创建
+create or replace function GetTaskCount(v_subTaskId in varchar2,v_taskType in number)
+return number
+is
+    r number(38);
+begin
+    r:=0;
+    --select count(*) into totle from TBL_TASK e where e.Taskid=v_taskid ;
+    --select count(*) into iseditCount from TBL_TASK e where e.Taskid=v_taskid  and e.isedit=1;
+    if v_taskType=1 Then
+      r:=v_taskType;
+    elsif v_taskType=10 Or v_taskType=11 Then
+      r:=v_taskType;
+    elsif v_taskType=34 Then
+      r:=v_taskType;
+    end if;
+return r;
+end;
+
+
+
+  
+? 2018 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Help
+Contact GitHub
+API
+Training
+Shop
+Blog
+About
+Press h to open a hovercard with more details.
+
+
+
+表操作
+--批量插入语法
+insert into TEST  
+select 'tt','ff' from dual;
+或者
+insert all 
+ into TEST values('4014033','')
+ into TEST values('4065304','dfd')
+ into TEST values('4088136','')
+ into TEST values('4092405','dfd')
+select 1 from dual;
+
+
+GUiD生成
+SELECT SYS_GUID() FROM　DUAL;
+
+
+
+
+
+
+
+
+
+

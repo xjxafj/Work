@@ -1,0 +1,21 @@
+﻿scrapy startproject dangdangPageCrawler            #创建项目
+scrapy genspider -t basic dangdang dangdang.com    #创建爬取当当网的爬虫文件spider                      #创建指定网页爬虫
+
+#全局设置
+#关闭ROBOTSTXT_OBEY=False   settings.py 文件中的该属性不遵循关闭ROBOTSTXT_OBEY爬虫协议
+#定义程序开始方法 即main.py和scrapy.cfg位于同一层目录下，然后在main.py输入一下代码：
+
+# 爬虫页面开始
+from scrapy import cmdline
+# 执行 指定的爬虫文件
+cmdline.execute("scrapy crawl dangdang".split())
+
+
+title=scrapy.Field()     #定义字段
+link=scrapy.Field()      #定义字段
+comment=scrapy.Field()   #定义字段
+ 
+
+xpath="//div[@id='search_nature_rg']/ul/li"
+
+scrapy crawl dangdang --nolog  #启动爬虫

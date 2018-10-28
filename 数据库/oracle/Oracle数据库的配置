@@ -1,0 +1,6 @@
+Oracle Instant Client下载地址：
+http://www.oracle.com/technetwork/database/database-technologies/instant-client/overview/index.html
+查询当前使用的监听配置信息
+cmd 命令
+tnsping orcl    说明(orcl为全局服务名)
+

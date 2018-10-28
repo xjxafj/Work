@@ -1,0 +1,186 @@
+ELK框架环境搭建
+框架说明
+	ELK是Elasticsearch、Logstash、Kibana的简称，这三者是核心套件，但并非全部。(版本是6.4.0)
+	官网地址:https://www.elastic.co/cn/
+	官网权威指南:https://www.elastic.co/guide/cn/elasticsearch/guide/current/index.html
+	安装指南：https://www.elastic.co/guide/en/elasticsearch/reference/5.x/rpm.html
+	组件下载地址: https://www.elastic.co/cn/downloads
+框架运行环境
+	PC系统: Centos6.5 /Ubauntu
+	jdk: 需要Java 8或更高版本。 或OpenJDK等开源发行版。
+	Elasticsearch: 
+	Logstash:
+	Kibana:
+	
+环境安装:
+	jdk安装博客： url: http://www.oracle.com/technetwork/java/javase/downloads/index.html
+	
+	linux系统安装
+	yum install -y java-1.8.0-openjdk
+	
+	ubuntu系统安装   url: https://jingyan.baidu.com/article/d621e8da0e92052865913f32.html
+	sudo apt install openjdk-8-jdk-headless
+	
+	sudo dpkg install openjdk-8-jdk-headless
+	
+	通用解压安装
+	sudo tar zxvf jdk-8u181-linux-x64.tar.gz -C /usr/lib/jvm/
+	
+	
+	环境变量配置
+	vim ~/.profile
+	vi ~/.bashrc
+		JAVA_HOME=/usr/lib/jvm/jdk1.8.0_181
+		PATH=$JAVA_HOME/bin:$PATH
+		CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+		JRE_HOME=$JAVA_HOME/jre
+		export JAVA_HOME PATH CLASSPATH JRE_HOME
+
+	//配置jdk版本
+	sudo update-alternatives --install /usr/bin/java java /usr/java/jdk1.8.0_25/bin/java 300  
+	sudo update-alternatives --install /usr/bin/javac javac /usr/java/jdk1.8.0_25/bin/javac 300  
+	sudo update-alternatives --install /usr/bin/jar jar /usr/java/jdk1.8.0_25/bin/jar 300   
+	sudo update-alternatives --install /usr/bin/javah javah /usr/java/jdk1.8.0_25/bin/javah 300   
+	sudo update-alternatives --install /usr/bin/javap javap /usr/java/jdk1.8.0_25/bin/javap 300 
+
+	sudo update-alternatives --config java
+	//若是初次安装，则会提示没有选项，否则会有选项可选
+	
+	检查配置是否成
+	java -version
+	java
+	sudo update-alternatives --config java  #查询本机jdk安装各个版本集合
+	echo $JAVA_HOME
+	
+	
+安装博客:http://blog.51cto.com/zero01/2079879
+Kibana安装:
+	一 安装同下Elasticsearch
+		
+	二 配置环境
+		[root@master-node ~]# vim /etc/kibana/kibana.yml  # 增加以下内容
+		server.port: 5601  # 配置kibana的端口
+		server.host: 192.168.77.128  # 配置监听ip
+		elasticsearch.url: "http://192.168.77.128:9200"  # 配置es服务器的ip，如果是集群则配置该集群中主节点的ip
+		logging.dest: /var/log/kibana.log  # 配置kibana的日志文件路径，不然默认是messages里记录日志
+	三 启动服务   
+		#设置服务为开机启动
+		systemctl enable kibana.service  
+		#启动服务
+		systemctl start kibana.service
+		
+		sudo service kibana start
+	
+
+
+   
+Elasticsearch安装:
+	一 安装
+		(Linux)安装方式一:  添加yum 库后通过 yum安装	
+			[root@master-node ~]# rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
+			[root@master-node ~]# vim /etc/yum.repos.d/elastic.repo  # 增加以下内容
+			[elasticsearch-6.x]
+			name=Elasticsearch repository for 6.x packages
+			baseurl=https://artifacts.elastic.co/packages/6.x/yum
+			gpgcheck=1
+			gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
+			enabled=1
+			autorefresh=1
+			type=rpm-md
+			[root@master-node ~]# yum install -y elasticsearch
+		(Linux)安装方式二:
+			[root@master-node ~]# wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.4.0.rpm
+			[root@master-node ~]# rpm -ivh elasticsearch-6.4.0.rpm
+		(Ubauntu)安装方式三:
+			#切换用户到root
+			sudo dpkg -I elasticsearch-6.4.0.deb
+			apt-get install -y kibana
+			
+	二 配置环境
+		config配置：
+		# vim /etc/elasticsearch/elasticsearch.yml
+		找到配置文件中的cluster.name，打开该配置并设置集群名称
+		cluster.name: el_cluster_01
+		找到配置文件中的node.name，打开该配置并设置节点名称
+		node.name: el_01
+		修改data存放的路径
+		path.data: /data/es-data
+		修改logs日志的路径
+		path.logs: /var/log/elasticsearch/
+		配置内存使用用交换分区
+		bootstrap.memory_lock: true
+		监听的网络地址
+		network.host: 0.0.0.0
+		el集群
+		discovery.zen.ping.unicast.hosts: ["el_01", "el_02","el_03","el_04"]
+		开启监听的端口
+		http.port: 9200
+	三 启动服务   
+		#设置服务为开机启动
+		systemctl enable elasticesrarch.service  
+		systemctl start elasticesrarch.service
+		进入到bin 目录下执行 ./elasticsearch 命令就可以了，执行 ./elasticesrarch -d 是后台运行  
+	四 检验是否启动成功
+	   fj@fj-B150M-WIND:/var$ curl -get localhost:9200
+		{
+		  "name" : "node-1",
+		  "cluster_name" : "elk-cluster1",
+		  "cluster_uuid" : "vu1LNwZlRoSLprG_xEZb0w",
+		  "version" : {
+			"number" : "6.4.0",
+			"build_flavor" : "default",
+			"build_type" : "deb",
+			"build_hash" : "595516e",
+			"build_date" : "2018-08-17T23:18:47.308994Z",
+			"build_snapshot" : false,
+			"lucene_version" : "7.4.0",
+			"minimum_wire_compatibility_version" : "5.6.0",
+			"minimum_index_compatibility_version" : "5.0.0"
+		  },
+		  "tagline" : "You Know, for Search"
+		}
+
+	可是外部服务器访问就是连不上
+
+	通过命令netstat -aon|grep 9200查询发现elasticsearch默认绑定host是127.0.0.1。
+
+	修改config/elasticsearch.yml
+
+	添加network.host: 你的服务器ip/或者0.0.0.0
+	
+	切换到root用户修改配置sysctl.conf
+
+	vi /etc/sysctl.conf 
+	
+	添加下面配置（如果没修改过会是一个空文件，直接添加就行）：
+
+	vm.max_map_count=655360
+
+	然后在启动，外部就能访问了
+	
+
+Logstash安装:
+	一 安装同Elasticsearch
+		
+	二 配置环境
+		[root@data-node1 ~]# vim /etc/logstash/conf.d/syslog.conf  # 加入如下内容
+		input {  # 定义日志源
+		  syslog {
+			type => "system-syslog"  # 定义类型
+			port => 10514    # 定义监听端口
+		  }
+		}
+		output {  # 定义日志输出
+		  stdout {
+			codec => rubydebug  # 将日志输出到当前的终端上显示
+		  }
+		}
+	三 启动服务   
+		#设置服务为开机启动
+		systemctl enable logstash.service  
+		#启动服务
+		systemctl start logstash.service	
+		
+		
+Elasticsearch管理插件
+	谷歌应用商店  :  elasticsearch-head

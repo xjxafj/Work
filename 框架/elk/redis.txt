@@ -1,0 +1,90 @@
+官网
+https://redis.io/download
+
+
+转的指定安装的目录
+1 wget http://download.redis.io/releases/redis-3.2.12.tar.gz
+
+2 tar xzf redis-4.0.11.tar.gz
+
+#修改配置文件
+3 vi /usr/local/redis-3.2.12/redis.conf 
+
+  ################################# GENERAL #####################################
+
+  # By default Redis does not run as a daemon. Use 'yes' if you need it.
+  # Note that Redis will write a pid file in /var/run/redis.pid when daemonized.
+  daemonize yes
+
+  找到bind 127.0.0.1，把这行前面加个#注释掉
+  再查找protected-mode yes 把yes修改为no，然后：wq保存文件，
+
+
+
+4 make   
+    Linux CentOS 7编译redis报错"cc:未找到命令"解决方案
+    yum -y install gcc automake autoconf libtool make 
+
+    redis安装zmalloc.h:50:31: 致命错误：jemalloc/jemalloc.h：没有那个文件或目录
+    make MALLOC=libc
+#安装redis
+5 make PREFIX=/usr/local/redis/redis-3.2.12 install
+
+#配置文件移动到启动的目录
+6 cp /usr/local/redis-3.2.12/redis.conf /usr/local/redis/redis-3.2.12/bin
+
+#开放6379远程访问
+7 /sbin/iptables -I INPUT -p tcp --dport 6379 -j ACCEPT
+  1、6379端口没有开放
+  firewall-cmd --zone=public --add-port6379/tcp --permanent
+  重启防火墙
+  firewall-cmd --reload
+
+#保存端口修改
+8 #/etc/rc.d/init.d/iptables save
+
+#进入到安装的目录中bin文件夹
+9 cd /usr/local/redis/redis-3.2.12/bin
+
+#启动redis 并指定配置文件
+10 ./redis-server redis.conf  
+
+#重启服务
+3.service redis restart
+
+启动redis客服端
+[root@MiWiFi-R3P-srv /usr/local/redis/redis-3.2.12/bin]# ./redis-cli 
+127.0.0.1:6379>
+
+-------------------------------------------------------
+
+#查询redis 服务端口信息
+ps -df | grep redis
+
+#杀死进程
+kill -9 21554
+
+
+
+
+
+
+--zone #作用域
+
+
+
+
+
+#重启服务
+
+
+
+
+
+
+
+
+
+
+
+

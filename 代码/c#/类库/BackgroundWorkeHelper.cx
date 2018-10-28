@@ -1,0 +1,6 @@
+ bw = new BackgroundWorker();
+                bw.DoWork += Bw_DoWork;
+                bw.WorkerReportsProgress = true;
+                bw.RunWorkerCompleted += Bw_RunWorkerCompleted;
+                bw.ProgressChanged += Bw_ProgressChanged;
+                bw.RunWorkerAsync(Tusegs);

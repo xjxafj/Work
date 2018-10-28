@@ -1,0 +1,1 @@
+SELECT case DATALENGTH('list')-LEN('list') when 0 then '英文' else '中文' end;

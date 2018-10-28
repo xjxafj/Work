@@ -1,0 +1,66 @@
+#输入--------------------------------------------------------------------------------------------------------
+input
+{
+	#收集el日志文件
+	file{
+		path=>"J:\ELK\logs\el_cluster_01.log"
+		type=>"el_log"
+		start_position=>"beginning"
+		#匹配以[开头为一条日志
+		codec=>multiline{
+			pattern=>"^\["
+			negate=> true
+			what=>"previous"
+		}
+	}
+	#标准输入
+	stdin{}
+}
+
+
+#输出------------------------------------------------------------------------------------------------------
+output
+{
+	#判断类型输出
+    if [type]=="el_log"{
+		elasticsearch
+		{
+			hosts=>['192.168.31.80:9200']
+			index=>"el_log-%{+YYYY.MM.dd}"
+		}
+	}
+}
+
+
+
+#codec_demo
+#		codec=>multiline{
+#			pattern=>"^\["
+#			negate=> true | false
+#			what=>"previous" or "next"
+#		}
+
+
+input
+{
+	#标准输入
+	stdin{
+		#匹配以[开头为一条日志
+		codec=>multiline{
+			pattern=>"^\["
+			negate=> true
+			what=>"previous"
+		}
+	}
+}
+output
+{
+
+	#标准输出
+	stdout{
+	
+	}
+}
+
+
+

@@ -1,0 +1,12 @@
+项目名
+    log
+    conf
+    core 
+    libs
+    docs
+    READEME.txt           项目介绍
+    setup.py
+    bin
+    requirements.txt     获取当前python 安装的包名及版本号  pip freeze   项目依赖库 一键安装   pip install -r requirements.txt
+    
+   

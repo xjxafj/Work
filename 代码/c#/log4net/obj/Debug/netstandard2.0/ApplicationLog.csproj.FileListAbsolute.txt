@@ -1,0 +1,9 @@
+C:\Users\xjxaf\source\repos\数据库操作案例\ApplicationLog\bin\Debug\netstandard2.0\ApplicationLog.deps.json
+C:\Users\xjxaf\source\repos\数据库操作案例\ApplicationLog\bin\Debug\netstandard2.0\ApplicationLog.dll
+C:\Users\xjxaf\source\repos\数据库操作案例\ApplicationLog\obj\Debug\netstandard2.0\ApplicationLog.csprojResolveAssemblyReference.cache
+C:\Users\xjxaf\source\repos\数据库操作案例\ApplicationLog\obj\Debug\netstandard2.0\ApplicationLog.csproj.CoreCompileInputs.cache
+C:\Users\xjxaf\source\repos\数据库操作案例\ApplicationLog\obj\Debug\netstandard2.0\ApplicationLog.AssemblyInfoInputs.cache
+C:\Users\xjxaf\source\repos\数据库操作案例\ApplicationLog\obj\Debug\netstandard2.0\ApplicationLog.AssemblyInfo.cs
+C:\Users\xjxaf\source\repos\数据库操作案例\ApplicationLog\bin\Debug\netstandard2.0\ApplicationLog.pdb
+C:\Users\xjxaf\source\repos\数据库操作案例\ApplicationLog\obj\Debug\netstandard2.0\ApplicationLog.dll
+C:\Users\xjxaf\source\repos\数据库操作案例\ApplicationLog\obj\Debug\netstandard2.0\ApplicationLog.pdb

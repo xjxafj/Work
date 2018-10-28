@@ -1,0 +1,17 @@
+C:\Users\xjxaf\source\repos\数据库操作案例\数据库操作案例\bin\Debug\数据库操作案例.exe.config
+C:\Users\xjxaf\source\repos\数据库操作案例\数据库操作案例\bin\Debug\数据库操作案例.exe
+C:\Users\xjxaf\source\repos\数据库操作案例\数据库操作案例\bin\Debug\数据库操作案例.pdb
+C:\Users\xjxaf\source\repos\数据库操作案例\数据库操作案例\bin\Debug\Oracle.ManagedDataAccess.dll
+C:\Users\xjxaf\source\repos\数据库操作案例\数据库操作案例\obj\Debug\MainWindow.g.cs
+C:\Users\xjxaf\source\repos\数据库操作案例\数据库操作案例\obj\Debug\App.g.cs
+C:\Users\xjxaf\source\repos\数据库操作案例\数据库操作案例\obj\Debug\数据库操作案例_MarkupCompile.cache
+C:\Users\xjxaf\source\repos\数据库操作案例\数据库操作案例\obj\Debug\数据库操作案例_MarkupCompile.lref
+C:\Users\xjxaf\source\repos\数据库操作案例\数据库操作案例\obj\Debug\MainWindow.baml
+C:\Users\xjxaf\source\repos\数据库操作案例\数据库操作案例\obj\Debug\数据库操作案例.g.resources
+C:\Users\xjxaf\source\repos\数据库操作案例\数据库操作案例\obj\Debug\数据库操作案例.Properties.Resources.resources
+C:\Users\xjxaf\source\repos\数据库操作案例\数据库操作案例\obj\Debug\数据库操作案例.csproj.GenerateResource.cache
+C:\Users\xjxaf\source\repos\数据库操作案例\数据库操作案例\obj\Debug\数据库操作案例.csproj.CoreCompileInputs.cache
+C:\Users\xjxaf\source\repos\数据库操作案例\数据库操作案例\obj\Debug\数据库操作案例.csproj.CopyComplete
+C:\Users\xjxaf\source\repos\数据库操作案例\数据库操作案例\obj\Debug\数据库操作案例.exe
+C:\Users\xjxaf\source\repos\数据库操作案例\数据库操作案例\obj\Debug\数据库操作案例.pdb
+C:\Users\xjxaf\source\repos\数据库操作案例\数据库操作案例\obj\Debug\数据库操作案例.csprojAssemblyReference.cache
