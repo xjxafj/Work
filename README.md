@@ -22,8 +22,8 @@ git clone git@github.com:xjxafj/Work.git
 
 
 --备份到本地
-git reset --hard origin/master // 远程分支名称
 
+git fetch     //1.拷贝远程到本地版本
+git reset --hard origin/master // 2.更新到本地最新的master版本
 git fetch --all
-
 git fetch
