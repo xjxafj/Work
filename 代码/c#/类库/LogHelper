@@ -1,27 +1,76 @@
+using log4net;
+using log4net.Appender;
+using log4net.Core;
+using log4net.Layout;
+using log4net.Repository.Hierarchy;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-
-[assembly: log4net.Config.XmlConfigurator(Watch = true)]
-namespace ProjectAutomationCreate
+namespace Trados2019Plugin.Core.log
 {
 
     public class LogHelper
     {
-         /// <summary>
+        static LogHelper()
+        {
+            //编码方式加载配置
+            UseCodeConfig();
+
+        }
+        /// <summary>
+        /// 使用编码方式加载配置
+        /// </summary>
+        public static void UseCodeConfig()
+        {
+            Hierarchy hierarchy = (Hierarchy)LogManager.GetRepository();
+
+            PatternLayout patternLayout = new PatternLayout();
+            patternLayout.ConversionPattern = "[%date]  %-5level %logger - %message%newline";
+            patternLayout.ActivateOptions();
+
+            RollingFileAppender roller = new RollingFileAppender();
+            roller.AppendToFile = false;
+            roller.File = string.Format(@"C:\\Program Files (x86)\\SDL\\SDL Trados Studio\\Studio15\\logs\\app{0}.txt", DateTime.Now.ToString("yyyyMMdd"));
+            roller.Layout = patternLayout;
+            roller.MaxSizeRollBackups = 5;
+            roller.MaximumFileSize = "1GB";
+            roller.RollingStyle = RollingFileAppender.RollingMode.Size;
+            roller.StaticLogFileName = true;
+            roller.ActivateOptions();
+            hierarchy.Root.AddAppender(roller);
+
+            MemoryAppender memory = new MemoryAppender();
+            memory.ActivateOptions();
+            hierarchy.Root.AddAppender(memory);
+            hierarchy.Root.Level = Level.All;
+            hierarchy.Configured = true;
+        }
+
+
+        public static void UseFileConfig()
+        {
+            //使用文件加载配置
+            //FileInfo configFile = new FileInfo(@"C:\Program Files (x86)\SDL\SDL Trados Studio\Studio15\ProjectAutomationCreate.exe.config");
+            //if (configFile.Exists)
+            //{
+            //    log4net.Config.XmlConfigurator.Configure(configFile);
+            //}
+            //else
+            //{
+            //}
+        }
+
+        
+        /// <summary>
         /// 输出日志到Log4Net
         /// </summary>
         /// <param name="t"></param>
         /// <param name="ex"></param>
-        #region static void WriteLog(Type t, Exception ex)
+            #region static void WriteLog(Type t, Exception ex)
 
         public static void WriteLog(Type t, Exception ex)
         {
-            log4net.ILog log = log4net.LogManager.GetLogger(t);
-            log.Error("Error", ex);
+            //log4net.ILog logger = log4net.LogManager.GetLogger(t);
+            var logger = LogManager.GetLogger(t);
+            logger.Error("Error", ex);
         }
 
         #endregion
@@ -34,8 +83,25 @@ namespace ProjectAutomationCreate
         #region static void WriteLog(Type t, string msg)
         public static void WriteLog_info(Type t, string msg)
         {
-            log4net.ILog log = log4net.LogManager.GetLogger("CreateProceeLog");
-            log.Info(msg);
+            var logger = LogManager.GetLogger(t);
+            //log4net.ILog logger = log4net.LogManager.GetLogger("applog");
+            logger.Info(msg);
+        }
+        #endregion
+
+
+
+        /// <summary>
+        /// 输出日志到Log4Net
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="msg"></param>
+        #region static void WriteLog(Type t, string msg)
+        public static void AppWriteLog_info(Type t, string msg)
+        {
+            var logger = LogManager.GetLogger(t);
+            //log4net.ILog log = log4net.LogManager.GetLogger("applog");
+            logger.Info(msg);
         }
         #endregion
 
@@ -48,9 +114,11 @@ namespace ProjectAutomationCreate
         #region static void WriteLog_error(Type t, string msg)
         public static void WriteLog_error(Type t, string msg)
         {
-            log4net.ILog log = log4net.LogManager.GetLogger(t);
-            log.Error(msg);
+            var logger = LogManager.GetLogger(t);
+            //log4net.ILog logger = log4net.LogManager.GetLogger(t);
+            logger.Error(msg);
         }
         #endregion
     }
 }
+
