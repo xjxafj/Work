@@ -15,6 +15,15 @@ namespace 线程同步
         static void Main(string[] args)
         {
 
+            
+            Task ts = Task.Factory.StartNew(() =>
+                                    {
+                                        result = BLL.BLLFactory.GetService<IReportService>().LocatedMiscellaneousCheckResultById(new Guid(id));
+                                        if (result.Equals("1"))
+                                        {
+
+                                        }
+                                    });
             var tt = RegistryHelper.GetProductCode("SDL Trados Studio 2019");
             //test1();
             //List<TestClass> list = new List<TestClass>();
