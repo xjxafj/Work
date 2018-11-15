@@ -7,13 +7,14 @@ namespace Trados2019Plugin.Core.Hepler
     /// </summary>
     public class ProcessHelper
     {
+        
         /// <summary>
         /// 打开自定的文件目录并选中，文件存在时选中文件
         /// 文件不存在是选中文件所在的目录，目录不存在时
         /// 无操作
         /// </summary>
         /// <param name="fileFullName"></param>
-        public static void OpenFolderOrSelectFile(String fileFullName)
+        private static void OpenFolderOrSelectFile(String fileFullName)
         {
             try
             {
@@ -22,6 +23,10 @@ namespace Trados2019Plugin.Core.Hepler
                 if (fileInfo.Exists)
                 {
                     psi.Arguments = "/e,/select," + fileFullName;
+                }
+                else if (System.IO.Directory.Exists(fileFullName))
+                {
+                    psi.Arguments = fileFullName;
                 }
                 else if (System.IO.Directory.Exists(fileInfo.DirectoryName))
                 {
@@ -37,7 +42,7 @@ namespace Trados2019Plugin.Core.Hepler
             catch (Exception ex)
             {
                 //传入文件路径有误
-
+                
             }
         }
     }
