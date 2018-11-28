@@ -70,14 +70,16 @@ alter table test modify age default 30;
 　　drop tablespace tablespace_name including contents and datafiles;
 　　　如果其他表空间中的表有外键等约束关联到了本表空间中的表的字段，就要加上CASCADE CONSTRAINTS
 
+--将表复制到新表中
+SELECT hd.[DocId],df.Name,hd.HealthIndexId,hi.IndexName,hd.[IndexValue]
+INTO  [HealthOut].[dbo].data1 
+FROM [dbo].[HealthDocIndexes] hd 
 
-
-
-
-
-
-
-
+--将表复制到已经存在的表中
+insert into [HealthOut].[dbo].data1 (DocId,Name,HealthIndexId,IndexName,IndexValue)
+SELECT hd.[DocId],df.Name,hd.HealthIndexId,hi.IndexName,hd.[IndexValue]
+--INTO  [HealthOut].[dbo].data1 
+FROM [dbo].[HealthDocIndexes] hd 
 
 --创建MonolingualSentence脚本
 CREATE table MonolingualSentenceEN 
