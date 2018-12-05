@@ -1,1 +1,3 @@
 SELECT case DATALENGTH('list')-LEN('list') when 0 then '英文' else '中文' end;
+select case status when 1 then 3 ELSE 5 END  From [TBL_AEMTMSProject] where Code='AEM2018120516115356667'
+SELECT CASE  WHEN 1>Status and 1>Status THEN 1  ELSE 4 END FROM [TBL_AEMTMSProject]
