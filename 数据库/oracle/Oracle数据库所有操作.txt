@@ -373,8 +373,8 @@ GUiD生成
 SELECT SYS_GUID() FROM　DUAL;
 
 
-
-
+批量查如
+ temParams.Add(new OracleParameter(":term_id", OracleDbType.Varchar2, guidList0.ToArray(), System.Data.ParameterDirection.Input));
 
 
 
