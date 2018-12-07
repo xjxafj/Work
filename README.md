@@ -27,3 +27,6 @@ git fetch     //1.拷贝远程到本地版本
 git reset --hard origin/master // 2.更新到本地最新的master版本
 git fetch --all
 git fetch
+
+
+c# 之后有了动态类型dynamic,如果未引用Microsoft.CSharp.dll，关于动态类型,VS可能会报错。
