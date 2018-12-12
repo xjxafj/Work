@@ -48,7 +48,7 @@ namespace DataService.Common
             return Regex.IsMatch(value, pattern);
         }
 
-        /// <summary>
+       /// <summary>
         /// 数据库字段转换成实体
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -139,7 +139,7 @@ namespace DataService.Common
                 List<string> list = new List<string>();
                 try
                 {
-                    list= JsonHelper.jc.Deserialize<List<string>>(obj.ToString());
+                    list= JsonHelper.jc.Deserialize<List<string>>(obj.ToString())??list;
                 }
                 catch (Exception ex)
                 {
@@ -150,17 +150,17 @@ namespace DataService.Common
             }
             else if (typeof(T) == typeof(Dictionary<string,string>))
             {
-                Dictionary<string, string> list = new Dictionary<string, string>();
+                Dictionary<string, string> dic = new Dictionary<string, string>();
                 try
                 {
-                    list = JsonHelper.jc.Deserialize<Dictionary<string, string>>(obj.ToString());
+                    dic = JsonHelper.jc.Deserialize<Dictionary<string, string>>(obj.ToString())??dic;
                 }
                 catch (Exception ex)
                 {
-                    list =new Dictionary<string, string>();
+                    dic =new Dictionary<string, string>();
 
                 }
-                d = list;
+                d = dic;
             }
             return (T)d;
         }
