@@ -20,8 +20,8 @@ class htmlHelper:
     }).encode("utf-8")
 
     proxy_list = [
-        {"http": "fwx377318:fj3224390%40@proxyhk.huawei.com:8080"}
-        # {"http": "http://proxyhk.huawei.com:8080"}
+        {"http": "账号:密码@proxy.gg.com:8080"}
+        # {"http": "http:/proxy.gg.com:8080"}
     ]
 
     USER_AGENTS = [
