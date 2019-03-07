@@ -1,0 +1,55 @@
+Sub d()
+    'replaceStrMethod ("<font color='red'>")
+    'replaceStrMethod ("</font>")
+    replaceStrMethod2
+End Sub
+'遍历所有单元格，标记查找内容标红
+Function replaceStrMethod(replaceStr As String) As Integer
+    Dim x%, y%, rg As Range
+    Dim strLen As Integer
+    'replaceStr = "<font color='red'>"
+    strLen = Len(replaceStr)
+    '选中的单元
+    For Each rg In Selection
+        '遍历单元内的字符
+        For x = 1 To Len(rg)
+            'MsgBox Mid(rg, x, strLen)
+            '获取range中的字符串，与替换的进行比较
+            If Mid(rg, x, strLen) = replaceStr Then
+                'MsgBox Mid(rg, x, strLen)
+                '标红字符
+                rg.Characters(Start:=x, Length:=strLen).Font.Color = -16776961
+            End If
+        Next x
+    Next rg
+End Function
+'遍历所有单元格，标记查找内容之间的字符标红
+Function replaceStrMethod2() As Integer
+    Dim x%, y%, rg As Range
+    Dim strLen1, strLen2, startIndex, endIndex As Integer
+    replaceStr1 = "<font color='red'>"
+    replaceStr2 = "</font>"
+    strLen1 = Len(replaceStr1)
+    strLen2 = Len(replaceStr2)
+    '选中的单元
+    For Each rg In Selection
+        startIndex = -1
+        endIndex = -1
+        '遍历单元内的字符
+        For x = 1 To Len(rg)
+            'MsgBox Mid(rg, x, strLen)
+            '获取range中的字符串，与替换的进行比较
+            If Mid(rg, x, strLen1) = replaceStr1 Then
+               startIndex = x + strLen1 - 1
+            End If
+            If Mid(rg, x, strLen2) = replaceStr2 Then
+               endIndex = x
+            End If
+        Next x
+        If startIndex <> -1 And endIndex <> -1 Then
+             'MsgBox ("")
+             '标红字符
+             rg.Characters(Start:=startIndex + 1, Length:=endIndex - startIndex - 1).Font.Color = -16776961
+        End If
+    Next rg
+End Function
