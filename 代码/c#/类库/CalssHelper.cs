@@ -5,7 +5,8 @@ using System.Data;
 using System.Linq;
 using System.Reflection;
 using System.Web;
-
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace QTranslateService.Common
 {
@@ -204,6 +205,97 @@ namespace QTranslateService.Common
                 throw ex;
             }
             return d;
+        }
+        
+        /// <summary>
+        /// 反射实现两个类的对象之间相同属性的值的复制
+        /// 适用于没有新建实体之间
+        /// </summary>
+        /// <typeparam name="D">返回的实体</typeparam>
+        /// <typeparam name="S">数据源实体</typeparam>
+        /// <param name="targetObj">返回的实体</param>
+        /// <param name="sourceObj">数据源实体</param>
+        /// <returns></returns>
+        public static string JsonUpdateObj<T>(string jsonStr, object targetObj)
+        {
+            string result = string.Empty;   
+            try
+            {
+                JObject sourceTobj = JsonConvert.DeserializeObject<JObject>(jsonStr);
+                T sourceObj = JsonConvert.DeserializeObject<T>(jsonStr);
+                var sourceTypes = sourceObj.GetType();//获得类型  
+                var targetTypes = targetObj.GetType();
+                foreach (var item in sourceTobj)
+                {
+                    foreach (PropertyInfo sourceField in sourceTypes.GetProperties())//获得类型的属性字段  
+                    {
+                        if (item.Key.Equals(sourceField.Name))
+                        {
+                            foreach (PropertyInfo targetField in targetTypes.GetProperties())
+                            {
+                                if (targetField.Name == sourceField.Name && targetField.PropertyType == sourceField.PropertyType)//判断属性名是否相同  
+                                {
+                                    try
+                                    {
+                                        targetField.SetValue(targetObj, sourceField.GetValue(sourceObj, null), null);//获得s对象属性的值复制给d对象的属性  
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        result = ex.Message;
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                result= ex.Message;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 反射实现两个类的对象之间相同属性的值的复制
+        /// 适用于没有新建实体之间
+        /// </summary>
+        /// <typeparam name="D">返回的实体</typeparam>
+        /// <typeparam name="S">数据源实体</typeparam>
+        /// <param name="targetObj">返回的实体</param>
+        /// <param name="sourceObj">数据源实体</param>
+        /// <returns></returns>
+        public static string  MapperToModel2(Object sourceObj,object targetObj)
+        {
+            try
+            {
+                var sourceTypes = sourceObj.GetType();//获得类型  
+                var targetTypes = targetObj.GetType();
+                foreach (PropertyInfo sourceField in sourceTypes.GetProperties())//获得类型的属性字段  
+                {
+                    foreach (PropertyInfo targetField in targetTypes.GetProperties())
+                    {
+                        if (targetField.Name == sourceField.Name && targetField.PropertyType == sourceField.PropertyType)//判断属性名是否相同  
+                        {
+                            try
+                            {
+                                targetField.SetValue(targetObj, sourceField.GetValue(sourceObj, null), null);//获得s对象属性的值复制给d对象的属性  
+                            }
+                            catch (Exception)
+                            {
+
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+            return "";
         }
 
     }
