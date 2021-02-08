@@ -1,0 +1,12 @@
+插件：
+chinese  汉化vs code
+Material Theme 主题
+Prettier 代码格式化
+Ctrl + 快捷键 设置-文本编辑器-正在格式化
+Bracket pair {}括号提示增强
+Auto Rename Tag html标签自动重命名的插件
+CSS Peek  css导航定位
+CSS Formatter
+Debugger for Chrome
+Live Server HTML静态页面
+JS-CSS-HTML Formatter
